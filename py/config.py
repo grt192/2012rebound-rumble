@@ -13,6 +13,7 @@ from grt.core import SensorPoller, Constants
 from grt.mechanism.drivetrain import DriveTrain
 from grt.mechanism.drivecontroller import ArcadeDriveController
 from grt.mechanism.motorset import Motorset
+from grt.mechanism import Chalupa, Shooter
 from grt.sensors.ticker import Ticker
 from grt.sensors.encoder import Encoder
 import grt.networktables as networktables
@@ -49,6 +50,7 @@ compressor = Compressor(pressure_sensor_pin, compressor_pin)
 compressor.Start()
 
 #Mechs
+git
 
 #Teleop Controllers
 ac = ArcadeDriveController(dt, driver_stick)
@@ -79,6 +81,7 @@ reset_ticker = Ticker(1)
 reset_ticker.tick = reset_tick
 
 #Autonomous
+
 
 #Sensor Pollers
 sp = SensorPoller((gyro, dt.right_encoder,
