@@ -2,88 +2,153 @@
 Config File for Robot
 """
 
-__author__ = "Sidd Karamcheti"
 
-from wpilib import Talon, Solenoid, Compressor, DriverStation
+from wpilib import DriverStation, Victor
 
 from grt.sensors.attack_joystick import Attack3Joystick
 from grt.sensors.xbox_joystick import XboxJoystick
 from grt.sensors.gyro import Gyro
-from grt.core import SensorPoller, Constants
+from grt.core import SensorPoller
 from grt.mechanism.drivetrain import DriveTrain
-from grt.mechanism.drivecontroller import ArcadeDriveController
+from grt.mechanism.drivecontroller import TankDriveController
 from grt.mechanism.motorset import Motorset
 from grt.mechanism import Chalupa, Shooter
 from grt.sensors.ticker import Ticker
 from grt.sensors.encoder import Encoder
-import grt.networktables as networktables
+from grt.sensors.switch import Switch
+from grt.mechanism.mechcontroller import MechController
 
-constants = Constants()
 
-#Pin/Port map
-#Talons
-dt_right = Talon(2)
-dt_left = Motorset((Talon(1), ), scalefactors=(-1, ))
 
-#Solenoids + Relays
-compressor_pin = 1
-dt_shifter = Solenoid(1)
+LEFT_SIDECAR_MODULE = 1
+RIGHT_SIDECAR_MODULE = 2
 
-#Digital Sensors
-left_encoder = Encoder(3, 4, constants['dt_dpp'], reverse=True)
-right_encoder = Encoder(1, 2, constants['dt_dpp'])
-pressure_sensor_pin = 14
+#Driver station components
+primary_joystick = Attack3Joystick(1)
+secondary_joystick = Attack3Joystick(2)
+tertiary_joystick = XboxJoystick(3)
 
-#Analog Sensors
-gyro = Gyro(2)
 
-# Controllers
-driver_stick = Attack3Joystick(1)
-xbox_controller = XboxJoystick(2)
 
+
+
+#Mechanism Encoders
+turret_rotation_encoder = Encoder(5, 6, pulse_dist=4.0)
+turret_visor_encoder = Encoder(7, 8, pulse_dist=4.0)
+
+
+
+
+#Drivetrain Victors and encoders
+ 
+left_encoder = Encoder(2, 1, pulse_dist=0.32)
+right_encoder = Encoder(3, 4, pulse_dist=0.32)
+#Third value is the pulse distance.
+
+dt_left = Motorset((Victor(LEFT_SIDECAR_MODULE, 9), Victor(LEFT_SIDECAR_MODULE, 10)), scalefactors=(-1, 1))
+dt_right = Motorset((Victor(RIGHT_SIDECAR_MODULE, 9), Victor(RIGHT_SIDECAR_MODULE, 10)), scalefactors=(1, -1))
 #DT
-dt = DriveTrain(dt_left, dt_right, dt_shifter,
-                left_encoder=left_encoder, right_encoder=right_encoder)
+dt = DriveTrain(dt_left, dt_right, dt_shifter, left_encoder=left_encoder, right_encoder=right_encoder)
 
-#Compressor
-compressor = Compressor(pressure_sensor_pin, compressor_pin)
-compressor.Start()
 
-#Mechs
-git
 
 #Teleop Controllers
-ac = ArcadeDriveController(dt, driver_stick)
+tc = TankDriveController(dt, primary_joystick, secondary_joystick)
 
-#Network Tables
-vision_table = networktables.get_table('vision')
-status_table = networktables.get_table('status')
+
+#VICTORS FOR MECHANISMS
+ 
+#Mechanism Victors
+wedge_victor = Victor(LEFT_SIDECAR_MODULE, 4)
+rotation_victor = Victor(RIGHT_SIDECAR_MODULE, 3)
+visor_victor = Victor(RIGHT_SIDECAR_MODULE, 4)
+flywheel_victor1 = Victor(RIGHT_SIDECAR_MODULE, 7)
+flywheel_victor2 = Victor(RIGHT_SIDECAR_MODULE, 8)
+drawbridge_victor = Victor(RIGHT_SIDECAR_MODULE, 5)
+flail_victor1 = Victor(LEFT_SIDECAR_MODULE, 3)
+top_trans_victor1 = Victor(LEFT_SIDECAR_MODULE, 5)
+top_trans_victor2 = Victor(LEFT_SIDECAR_MODULE, 6)
+bot_trans_victor1 = Victor(LEFT_SIDECAR_MODULE, 7)
+bot_trans_victor2 = Victor(LEFT_SIDECAR_MODULE, 8)
+
+
+
+
+
+#MECHANISM INTIALIZATION
+ 
+
+
+collection_switch = Switch(LEFT_SIDECAR_MODULE,14)
+upper_rollers_switch = Switch(LEFT_SIDECAR_MODULE,13)
+hopper_switch = Switch(LEFT_SIDECAR_MODULE, 12)
+ball_queue_switch = Switch(LEFT_SIDECAR_MODULE, 11)
+
+flywheel_motors = Motorset((flywheel_victor1, flywheel_victor2))
+
+chalupa = Chalupa(drawbridge_victor, flail_victor1, top_trans_victor1)	
+shooter = Shooter(bot_trans_victor1, flywheel_motors, rotation_victor)
+
+mechcontroller = MechController(chalupa, shooter, primary_joystick, secondary_joystick, xbox_joystick)
 
 ds = DriverStation.GetInstance()
 
 
-#Diagnostic ticker
-def status_tick():
-    status_table['l_speed'] = dt.left_motor.Get()
-    status_table['r_speed'] = dt.right_motor.Get()
-    status_table['voltage'] = ds.GetBatteryVoltage()
-    status_table['status'] = 'disabled' if ds.IsDisabled() else 'teleop' if ds.IsOperatorControl() else 'auto'
-
-status_ticker = Ticker(.05)
-status_ticker.tick = status_tick
-
-
-def reset_tick():
-    if driver_stick.button10 and driver_stick.button11:
-        constants.poll()
-
-reset_ticker = Ticker(1)
-reset_ticker.tick = reset_tick
-
-#Autonomous
-
 
 #Sensor Pollers
-sp = SensorPoller((gyro, dt.right_encoder,
-                   dt.left_encoder, status_ticker, reset_ticker))
-hid_sp = SensorPoller((driver_stick, xbox_controller))  # human interface devices
+sp = SensorPoller((dt.right_encoder,
+                   dt.left_encoder, turret_rotation_encoder, turret_visor_encoder))
+hid_sp = SensorPoller((primary_joystick, secondary_joystick, tertiary_joystick))  # human interface devices
+
+
+#End of ported pin map. All code in the large commented-out block is
+#the old Java mechanism code.
+"""
+Wedge wedge = new Wedge(wedgeVictor, null, null, "Wedge");
+wedge.start();
+wedge.enable();
+Drawbridge drawbridge = new Drawbridge(drawbridgeVictor, null, null, "DrawBridge");
+drawbridge.start();
+drawbridge.enable();
+
+ShootingSystem ss = new ShootingSystem(rotationVictor, visorVictor,
+        flywheelVictor1, flywheelVictor2,
+        flailVictor1,
+        topTransVictor1, topTransVictor2,
+        botTransVictor1, botTransVictor2, 
+        turretRotationEncoder, turretVisorEncoder);
+ss.start(); ss.enable();
+ss.enableAllSystems();      //YOU MUST DO THIS BEFORE USING THE SHOOTING SYSTEMS
+
+ss.addDataLogger(new RPCLogger(rpcConn));
+
+BallTracker bt = new BallTracker(STARTING_BALLS, collectionSwitch, hopperSwitch, upperRollersSwitch, ballQueueSwitch);
+bt.start(); bt.enable();
+
+
+MechTester tester = new MechTester(tertiary, dt, wedge, drawbridge, ss, "Mechanism Tester");
+
+BetabotController bc = new BetabotController(tertiary, primary, secondary, ss, wedge, drawbridge, tester);
+
+bt.addBallListener(bc);
+
+RPCShootingController shootControl = new RPCShootingController(rpcConn, ss, 88);
+
+
+
+
+
+
+addTeleopController(driveControl);
+addTeleopController(bc);
+addTeleopController(shootControl);
+//        addTeleopController(encTest);
+//        addTeleopController(rpcController);
+//        addTeleopController(distTest);
+//        addAutonomousController(balancer);
+"""
+
+
+
+
+
