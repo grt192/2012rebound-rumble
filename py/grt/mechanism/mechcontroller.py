@@ -1,5 +1,5 @@
 class MechController:
-	def _init_(self, chalupa, shooter, driver_joystick1, driver_joystick2, xbox_controller):
+	def __init__(self, chalupa, shooter, driver_joystick1, driver_joystick2, xbox_controller):
 		self.chalupa = chalupa
 		self.shooter = shooter
 		self.driver_joystick1 = driver_joystick1
@@ -25,24 +25,24 @@ class MechController:
 				self.shooter.rotate(datum)
 
 	def _driver_joystick1_listener(self, sensor, state_id, datum):
-		if state_id = "trigger":
+		if state_id == "trigger":
 			if datum:
 				self.chalupa.start_ep()
 			else:
 				self.chalupa.stop_ep()
-		if state_id = "button3":
+		if state_id == "button3":
 			if datum:
 				self.chalupa.angle_change(0.5)
 			else:
 				self.chalupa.angle_change(0)
-		if state_id = "button2"
+		if state_id == "button2"
 			if datum:
 				self.chalupa.angle_change(-0.5)
 			else:
 				self.chalupa.angle_change(0)
 
 	def _driver_joystick2_listener(self, sensor, state_id, datum):
-		if state_id = "trigger":
+		if state_id == "trigger":
 			if datum:
 				self.chalupa.reverse_ep()
 			else:
