@@ -10,7 +10,7 @@ from grt.sensors.xbox_joystick import XboxJoystick
 from grt.sensors.gyro import Gyro
 from grt.core import SensorPoller
 from grt.mechanism.drivetrain import DriveTrain
-from grt.mechanism.drivecontroller import TankDriveController
+from grt.mechanism.drivecontroller import ArcadeDriveController
 from grt.mechanism.motorset import Motorset
 from grt.mechanism import Chalupa, Shooter
 from grt.sensors.ticker import Ticker
@@ -36,7 +36,18 @@ tertiary_joystick = XboxJoystick(3)
 turret_rotation_encoder = Encoder(5, 6, pulse_dist=4.0)
 turret_visor_encoder = Encoder(7, 8, pulse_dist=4.0)
 
-
+#Mechanism Victors
+wedge_victor = Victor(LEFT_SIDECAR_MODULE, 4)
+rotation_victor = Victor(RIGHT_SIDECAR_MODULE, 3)
+visor_victor = Victor(RIGHT_SIDECAR_MODULE, 4)
+flywheel_victor1 = Victor(RIGHT_SIDECAR_MODULE, 7)
+flywheel_victor2 = Victor(RIGHT_SIDECAR_MODULE, 8)
+drawbridge_victor = Victor(RIGHT_SIDECAR_MODULE, 5)
+dt_right1 = Victor(LEFT_SIDECAR_MODULE, 3)
+dt_right2 = Victor(LEFT_SIDECAR_MODULE, 5)
+flywheel = Victor(LEFT_SIDECAR_MODULE, 6) #flywheel
+bot_trans_victor1 = Victor(LEFT_SIDECAR_MODULE, 7)
+bot_trans_victor2 = Victor(LEFT_SIDECAR_MODULE, 8)
 
 
 #Drivetrain Victors and encoders
@@ -45,31 +56,21 @@ left_encoder = Encoder(2, 1, pulse_dist=0.32)
 right_encoder = Encoder(3, 4, pulse_dist=0.32)
 #Third value is the pulse distance.
 
+#dt_left = Motorset((Victor(LEFT_SIDECAR_MODULE, 9), Victor(LEFT_SIDECAR_MODULE, 10)), scalefactors=(-1, 1))
+dt_right = Motorset((dt_right1, dt_right2), scalefactors=(-1, 1))
 dt_left = Motorset((Victor(LEFT_SIDECAR_MODULE, 9), Victor(LEFT_SIDECAR_MODULE, 10)), scalefactors=(-1, 1))
-dt_right = Motorset((Victor(RIGHT_SIDECAR_MODULE, 9), Victor(RIGHT_SIDECAR_MODULE, 10)), scalefactors=(1, -1))
 #DT
-dt = DriveTrain(dt_left, dt_right, dt_shifter, left_encoder=left_encoder, right_encoder=right_encoder)
+dt = DriveTrain(dt_left, dt_right, left_encoder=left_encoder, right_encoder=right_encoder)
 
 
 
 #Teleop Controllers
-tc = TankDriveController(dt, primary_joystick, secondary_joystick)
+ac = ArcadeDriveController(dt, primary_joystick)
 
 
 #VICTORS FOR MECHANISMS
  
-#Mechanism Victors
-wedge_victor = Victor(LEFT_SIDECAR_MODULE, 4)
-rotation_victor = Victor(RIGHT_SIDECAR_MODULE, 3)
-visor_victor = Victor(RIGHT_SIDECAR_MODULE, 4)
-flywheel_victor1 = Victor(RIGHT_SIDECAR_MODULE, 7)
-flywheel_victor2 = Victor(RIGHT_SIDECAR_MODULE, 8)
-drawbridge_victor = Victor(RIGHT_SIDECAR_MODULE, 5)
-flail_victor1 = Victor(LEFT_SIDECAR_MODULE, 3)
-top_trans_victor1 = Victor(LEFT_SIDECAR_MODULE, 5)
-top_trans_victor2 = Victor(LEFT_SIDECAR_MODULE, 6)
-bot_trans_victor1 = Victor(LEFT_SIDECAR_MODULE, 7)
-bot_trans_victor2 = Victor(LEFT_SIDECAR_MODULE, 8)
+
 
 
 
@@ -86,10 +87,10 @@ ball_queue_switch = Switch(LEFT_SIDECAR_MODULE, 11)
 
 flywheel_motors = Motorset((flywheel_victor1, flywheel_victor2))
 
-chalupa = Chalupa(drawbridge_victor, flail_victor1, top_trans_victor1)	
-shooter = Shooter(bot_trans_victor1, flywheel_motors, rotation_victor)
+chalupa = Chalupa(drawbridge_victor, flywheel, bot_trans_victor1)	
+shooter = Shooter(bot_trans_victor1, flywheel, rotation_victor)
 
-mechcontroller = MechController(chalupa, shooter, primary_joystick, secondary_joystick, xbox_joystick)
+mechcontroller = MechController(chalupa, shooter, primary_joystick, secondary_joystick, tertiary_joystick)
 
 ds = DriverStation.GetInstance()
 

@@ -35,7 +35,7 @@ class MechController:
 				self.chalupa.angle_change(0.5)
 			else:
 				self.chalupa.angle_change(0)
-		if state_id == "button2"
+		if state_id == "button2":
 			if datum:
 				self.chalupa.angle_change(-0.5)
 			else:

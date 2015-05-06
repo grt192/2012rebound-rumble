@@ -32,6 +32,9 @@ class ArcadeDriveController:
                 self.dt.upshift()
             else:
                 self.dt.downshift()
+        if state_id == "button10":
+            if datum:
+                raise NameError("rebooting")
 
 
 class TankDriveController:
