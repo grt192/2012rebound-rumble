@@ -14,18 +14,18 @@ class Chalupa:
         """
         Set power of angle change. Power > 0 --> forwards.
         """
-        self.angle_change_motor.Set(power * self.achange_power if math.fabs(power) < 0.3 else 0)
+        self.angle_change_motor.Set(power)
 
     def start_ep(self):
         self.ep_motor.Set(self.ep_power)
-        self.conveyor_motor.Set(self.conveyor_power)
+        #self.conveyor_motor.Set(self.conveyor_power)
 
     def reverse_ep(self):
         self.ep_motor.Set(-self.ep_power)
 
     def stop_ep(self):
         self.ep_motor.Set(0)
-        self.conveyor_motor.Set(0)
+        #self.conveyor_motor.Set(0)
 
 class Shooter:
     def __init__(self, hopper_motor, shooter_motor, turntable_motor, hopper_power=1, shooter_power=1, turntable_power=0.4):

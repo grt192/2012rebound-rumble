@@ -14,11 +14,14 @@ class MechController:
 			if datum:
 				self.shooter.start_flywheel()
 				self.shooter.start_hopper()
+				
+				print("B button pressed")
 
 		if state_id == "a_button":
 			if datum:
 				self.shooter.stop_flywheel()
 				self.shooter.stop_hopper()
+				print("A button pressed")
 
 		if state_id == 'l_y_axis':
 			if datum:

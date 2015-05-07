@@ -56,3 +56,6 @@ class TankDriveController:
         if sensor in (self.l_joystick, self.r_joystick) and state_id in ('x_axis', 'y_axis'):
             self.dt.set_dt_output(self.l_joystick.y_axis,
                                   self.r_joystick.y_axis)
+        if state_id == "button10":
+            if datum:
+                raise NameError("rebooting")

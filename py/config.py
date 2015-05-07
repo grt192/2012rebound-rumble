@@ -10,7 +10,7 @@ from grt.sensors.xbox_joystick import XboxJoystick
 from grt.sensors.gyro import Gyro
 from grt.core import SensorPoller
 from grt.mechanism.drivetrain import DriveTrain
-from grt.mechanism.drivecontroller import ArcadeDriveController
+from grt.mechanism.drivecontroller import TankDriveController
 from grt.mechanism.motorset import Motorset
 from grt.mechanism import Chalupa, Shooter
 from grt.sensors.ticker import Ticker
@@ -42,8 +42,10 @@ rotation_victor = Victor(RIGHT_SIDECAR_MODULE, 3)
 visor_victor = Victor(RIGHT_SIDECAR_MODULE, 4)
 flywheel_victor1 = Victor(RIGHT_SIDECAR_MODULE, 7)
 flywheel_victor2 = Victor(RIGHT_SIDECAR_MODULE, 8)
-drawbridge_victor = Victor(RIGHT_SIDECAR_MODULE, 5)
-dt_right1 = Victor(LEFT_SIDECAR_MODULE, 3)
+drawbridge_victor = Victor(RIGHT_SIDECAR_MODULE, 2)
+conveyor1 = Victor(LEFT_SIDECAR_MODULE, 3)
+conveyor2 = Victor(LEFT_SIDECAR_MODULE, 2)
+dt_right1 = Victor(LEFT_SIDECAR_MODULE, 4)
 dt_right2 = Victor(LEFT_SIDECAR_MODULE, 5)
 flywheel = Victor(LEFT_SIDECAR_MODULE, 6) #flywheel
 bot_trans_victor1 = Victor(LEFT_SIDECAR_MODULE, 7)
@@ -57,16 +59,16 @@ right_encoder = Encoder(3, 4, pulse_dist=0.32)
 #Third value is the pulse distance.
 
 #dt_left = Motorset((Victor(LEFT_SIDECAR_MODULE, 9), Victor(LEFT_SIDECAR_MODULE, 10)), scalefactors=(-1, 1))
-dt_right = Motorset((dt_right1, dt_right2), scalefactors=(-1, 1))
-dt_left = Motorset((Victor(LEFT_SIDECAR_MODULE, 9), Victor(LEFT_SIDECAR_MODULE, 10)), scalefactors=(-1, 1))
+dt_right = Motorset((dt_right1, dt_right2), scalefactors=(1, -1))
+dt_left = Motorset((Victor(LEFT_SIDECAR_MODULE, 9), Victor(LEFT_SIDECAR_MODULE, 10)), scalefactors=(1, -1))
 #DT
 dt = DriveTrain(dt_left, dt_right, left_encoder=left_encoder, right_encoder=right_encoder)
 
 
 
 #Teleop Controllers
-ac = ArcadeDriveController(dt, primary_joystick)
-
+#ac = ArcadeDriveController(dt, primary_joystick)
+tc = TankDriveController(dt, primary_joystick, secondary_joystick)
 
 #VICTORS FOR MECHANISMS
  
@@ -87,7 +89,9 @@ ball_queue_switch = Switch(LEFT_SIDECAR_MODULE, 11)
 
 flywheel_motors = Motorset((flywheel_victor1, flywheel_victor2))
 
-chalupa = Chalupa(drawbridge_victor, flywheel, bot_trans_victor1)	
+conveyor_motors = Motorset((conveyor1, conveyor2), scalefactors=(1, -1))
+
+chalupa = Chalupa(drawbridge_victor, conveyor_motors, bot_trans_victor1)	
 shooter = Shooter(bot_trans_victor1, flywheel, rotation_victor)
 
 mechcontroller = MechController(chalupa, shooter, primary_joystick, secondary_joystick, tertiary_joystick)
