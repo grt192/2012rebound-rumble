@@ -13,17 +13,30 @@ class MechController:
 		if state_id == "b_button":
 			if datum:
 				self.shooter.start_flywheel()
-				self.shooter.start_hopper()
+				#self.shooter.start_hopper()
 				
 				print("B button pressed")
 
 		if state_id == "a_button":
 			if datum:
 				self.shooter.stop_flywheel()
-				self.shooter.stop_hopper()
+				#self.shooter.stop_hopper()
 				print("A button pressed")
 
-		if state_id == 'l_y_axis':
+		if state_id == "y_button":
+			if datum:
+				self.chalupa.start_belt()
+				self.shooter.start_hopper()
+				
+				print("Y button pressed")
+
+		if state_id == "x_button":
+			if datum:
+				self.chalupa.stop_belt()
+				self.shooter.stop_hopper()
+				print("X button pressed")
+
+		if state_id == 'l_x_axis':
 			if datum:
 				self.shooter.rotate(datum)
 

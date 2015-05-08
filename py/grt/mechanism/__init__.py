@@ -1,7 +1,7 @@
 import math
 
 class Chalupa:
-    def __init__(self, angle_change_motor, ep_motor, conveyor_motor, achange_power=0.6, ep_power=1, conveyor_power=1):
+    def __init__(self, angle_change_motor, conveyor_motor, ep_motor, achange_power=0.6, ep_power=1, conveyor_power=.75):
         self.angle_change_motor = angle_change_motor
         self.ep_motor = ep_motor
         self.conveyor_motor = conveyor_motor
@@ -17,14 +17,25 @@ class Chalupa:
         self.angle_change_motor.Set(power)
 
     def start_ep(self):
-        self.ep_motor.Set(self.ep_power)
+        self.ep_motor.Set(-self.ep_power)
         #self.conveyor_motor.Set(self.conveyor_power)
+        self.conveyor_motor.Set(self.conveyor_power)
 
     def reverse_ep(self):
-        self.ep_motor.Set(-self.ep_power)
+        self.ep_motor.Set(self.ep_power)
+        self.conveyor_motor.Set(-self.conveyor_power)
+
+    def start_belt(self):
+        self.conveyor_motor.Set(-self.conveyor_power)
+
+
+    def stop_belt(self):
+        self.conveyor_motor.Set(0)
 
     def stop_ep(self):
         self.ep_motor.Set(0)
+        self.conveyor_motor.Set(0)
+
         #self.conveyor_motor.Set(0)
 
 class Shooter:

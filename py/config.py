@@ -37,19 +37,20 @@ turret_rotation_encoder = Encoder(5, 6, pulse_dist=4.0)
 turret_visor_encoder = Encoder(7, 8, pulse_dist=4.0)
 
 #Mechanism Victors
-wedge_victor = Victor(LEFT_SIDECAR_MODULE, 4)
-rotation_victor = Victor(RIGHT_SIDECAR_MODULE, 3)
+#wedge_victor = Victor(LEFT_SIDECAR_MODULE, 4)
+ep = Victor(RIGHT_SIDECAR_MODULE, 3)
 visor_victor = Victor(RIGHT_SIDECAR_MODULE, 4)
-flywheel_victor1 = Victor(RIGHT_SIDECAR_MODULE, 7)
-flywheel_victor2 = Victor(RIGHT_SIDECAR_MODULE, 8)
+#flywheel_victor1 = Victor(RIGHT_SIDECAR_MODULE, 7)
+#flywheel_victor2 = Victor(RIGHT_SIDECAR_MODULE, 8)
 drawbridge_victor = Victor(RIGHT_SIDECAR_MODULE, 2)
-conveyor1 = Victor(LEFT_SIDECAR_MODULE, 3)
-conveyor2 = Victor(LEFT_SIDECAR_MODULE, 2)
+conveyor = Victor(LEFT_SIDECAR_MODULE, 3)
+hopper = Victor(LEFT_SIDECAR_MODULE, 2)
 dt_right1 = Victor(LEFT_SIDECAR_MODULE, 4)
 dt_right2 = Victor(LEFT_SIDECAR_MODULE, 5)
-flywheel = Victor(LEFT_SIDECAR_MODULE, 6) #flywheel
-bot_trans_victor1 = Victor(LEFT_SIDECAR_MODULE, 7)
+flywheel1 = Victor(LEFT_SIDECAR_MODULE, 6) #flywheel
+flywheel2 = Victor(LEFT_SIDECAR_MODULE, 7)
 bot_trans_victor2 = Victor(LEFT_SIDECAR_MODULE, 8)
+rotation_victor = Victor(RIGHT_SIDECAR_MODULE, 1)
 
 
 #Drivetrain Victors and encoders
@@ -87,12 +88,12 @@ upper_rollers_switch = Switch(LEFT_SIDECAR_MODULE,13)
 hopper_switch = Switch(LEFT_SIDECAR_MODULE, 12)
 ball_queue_switch = Switch(LEFT_SIDECAR_MODULE, 11)
 
-flywheel_motors = Motorset((flywheel_victor1, flywheel_victor2))
+flywheel_motors = Motorset((flywheel1, flywheel2))
 
-conveyor_motors = Motorset((conveyor1, conveyor2), scalefactors=(1, -1))
+#conveyor_motors = Motorset((conveyor1, conveyor2), scalefactors=(1, -1))
 
-chalupa = Chalupa(drawbridge_victor, conveyor_motors, bot_trans_victor1)	
-shooter = Shooter(bot_trans_victor1, flywheel, rotation_victor)
+chalupa = Chalupa(drawbridge_victor, conveyor, ep)	
+shooter = Shooter(hopper, flywheel_motors, rotation_victor)
 
 mechcontroller = MechController(chalupa, shooter, primary_joystick, secondary_joystick, tertiary_joystick)
 
