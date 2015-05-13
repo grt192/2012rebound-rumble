@@ -54,6 +54,9 @@ class Shooter:
     def start_hopper(self):
         self.hopper_motor.Set(self.hopper_power)
 
+    def reverse_hopper(self):
+        self.hopper_motor.Set(-self.hopper_power)
+
     def stop_flywheel(self):
         self.shooter_motor.Set(0)
 

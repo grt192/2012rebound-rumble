@@ -30,6 +30,10 @@ class MechController:
 				
 				print("Y button pressed")
 
+		if state_id == "r_shoulder":
+			if datum:
+				self.shooter.reverse_hopper()
+
 		if state_id == "x_button":
 			if datum:
 				self.chalupa.stop_belt()
